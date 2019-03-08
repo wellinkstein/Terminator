@@ -27,18 +27,18 @@ class Ui_MainWindow(object):
     
       # import in the interface a file  
     def import_Fichier (self,f):  
-        
        # on crée la liste des fichiers
         root = tk.Tk()
         root.withdraw()             # pour ne pas afficher la fenêtre Tk
         filepath = askopenfilename(filetypes=[('txt files','.txt')])   # lance la fenêtre
         print (filepath) 
-        
        #ouverture du fichier test.txt en mode read 'r' (lecture en mode texte)
         name = open(filepath, "r") 
         f = name.readlines() 
-        print (f)
-        
+        #print (f)
+        str1 = ''.join(f)
+        self.textEditPublishedDescription.append(str1)
+
     # Export in the directory a file "TerminatorResults-date-hour.xlsx"
     def exportExcel(self):
         self.labelErrorExecute.setText("")
