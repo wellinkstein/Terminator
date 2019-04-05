@@ -42,8 +42,21 @@ class Ui_MainWindow(object):
     # Export in the directory a file "TerminatorResults-date-hour.xlsx"
     def exportExcel(self):
         self.labelErrorExecute.setText("")
+        self. additionalInfos.append(self.lineEditRefNum.text())
+        self.additionalInfos.append(self.lineEditSpeciesNum.text())
+        self.additionalInfos.append(self.lineEditRecNum.text())
+        self.additionalInfos.append(self.lineEditGenus.text())
+        self.additionalInfos.append(self.lineEditSpecies.text())
+        self.additionalInfos.append(self.lineEditPopulation.text())
+        self.additionalInfos.append(self.lineEditStage.text())
+        self.additionalInfos.append(self.lineEditSex.text())
+        self.additionalInfos.append(self.lineEditLocality.text())
+        self.additionalInfos.append(self.lineEditHost.text())
+        
         try:
-            export(self.triads) #mauvaise forme de tableau
+            export(self.triads, self.additionalInfos) #mauvaise forme de tableau
+            self.labelErrorExecute.setText("Export successful")
+            
         except:
             print("Fail creation")
             self.labelErrorExecute.setText("Fail creation")
@@ -55,77 +68,6 @@ class Ui_MainWindow(object):
         #cell value can't be empty because else their value can be changed even when validated checkbox is checked
         self.tableViewResultExecute.setValue1(self.tableViewResultExecute.rowCount()-1,"none","none","none","none")
 
-    ###Saving method. No longer used, replaced with exportExcel
-    def creationFichier (self):
-        D=datetime.datetime.today()
-        X=D.strftime('%d_%m_%Y-%H_%M_%S')
-        nomFichier="Terminator-" + X + ".txt"
-        obj = open(nomFichier, 'w') ## Opening the file in writting
-       ## adding of label informations in the file
-        obj.write("                             TERMINATOR                          ")
-        obj.write("\n\n\n")
-        obj.write(X)
-        obj.write("\n\n\n")
-        obj.write("Ref N°:")
-        obj.write(self.lineEditRefNum.text())
-        obj.write("\n\n")
-        obj.write("Specie Number:")
-        obj.write(self.lineEditSpeciesNum.text())
-        obj.write("\n\n")
-        obj.write("Rec N°:")
-        obj.write(self.labelRecNum.text())
-        obj.write("\n\n")
-        obj.write("Genus:")
-        obj.write(self.lineEditGenus.text())
-        obj.write("\n\n")
-        obj.write("Specie Name:")
-        obj.write(self.lineEditSpecies.text())
-        obj.write("\n\n")
-        obj.write("Population:")
-        obj.write(self.lineEditPopulation.text())
-        obj.write("\n\n")
-        obj.write("Stage:")
-        obj.write(self.lineEditStage.text())
-        obj.write("\n\n")
-        obj.write("Sex:")
-        obj.write(self.lineEditSex.text())
-        obj.write("\n\n")
-        obj.write("Locality:")
-        obj.write(self.lineEditLocality.text())
-        obj.write("\n\n")
-        obj.write("Host:")
-        obj.write(self.lineEditHost.text())
-        obj.write("\n\n\n")
-        obj.write("Raw text entered:")
-        obj.write("\n\n")
-        obj.write(self.textEditPublishedDescription.toPlainText()) ## Adding  of the original text into the file
-        ## adding of the triads
-        obj.write("\n\n\n")
-        obj.write("Triades Generated:")
-        obj.write("\n\n\n")
-
-        espace = 60
-        #for each line in the Result table
-        for i in range(self.tableViewResultExecute.rowCount()):
-            
-            triad=[] # the array is initialised for each line
-            triad.append("           ")
-            triad.append( self.tableViewResultExecute.item(i,0).text()) #the organ is written 
-            wordLength = len(self.tableViewResultExecute.item(i,0).text()) - 1
-            
-            for z in range (espace-wordLength):# the necessary number of " " is added for the alignment
-                triad.append(" ")
-            
-            triad.append(self.tableViewResultExecute.item(i,1).text())            
-            wordLength = len(self.tableViewResultExecute.item(i,1).text()) - 1        
-            for e in range (espace-wordLength):
-                triad.append(" ")
-            triad.append(self.tableViewResultExecute.item(i,2).text())#the value is written
-            
-            stringTampon="".join(triad) #concatenation of the table to obtain a String
-            obj.write(stringTampon) #the String is written in the file
-            obj.write("\n")
-        obj.close()
 
 ################################################################################
    ###########################################################

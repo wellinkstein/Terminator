@@ -240,7 +240,7 @@ def supp_item():
 ################ Export of the triads list into an Excel file #################
 ###############################################################################
 
-def export(listeTriades): #create an Excel Sheet with the results & the additional informations
+def export(listeTriades, valAddInfo): #create an Excel Sheet with the results & the additional informations
     #print (listeTriades)
     # creation of the workbook
     addInfo = ['REF_N°:','SPECIES_N°','REC_N°:','Genus:','Specie name:','Population:','Sex:','Stage:','Locality:','Host:']
@@ -253,12 +253,12 @@ def export(listeTriades): #create an Excel Sheet with the results & the addition
     sheet1.write(0,0,'Organ')
     sheet1.write(0,1,'Property')
     sheet1.write(0,2,'Value')
-    
-    print("je test")    
+     
     #adding the reference column
     for i in range(len(addInfo)):
         #Bold text, it does not work : sheet1.write(i,4,'\033[1m' + addInfo[i])
         sheet1.write(i, 5, addInfo[i])
+        sheet1.write(i, 6, valAddInfo[i])
         #k+=1
     
     #sheet1.write(0,4, addInfo[0])
@@ -266,7 +266,6 @@ def export(listeTriades): #create an Excel Sheet with the results & the addition
     #filling the table
     for triades in listeTriades: #pour les triades de chaque phrase
         for triade in triades: #pour chaque triade
-            print(triade)
             sheet1.write(x,0,triade[0])
             sheet1.write(x,1,triade[1])
             sheet1.write(x,2,triade[2])
