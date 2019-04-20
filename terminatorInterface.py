@@ -25,7 +25,80 @@ class Ui_MainWindow(object):
     listBuffer=[]
     additionalInfos=[]
     
-      # import in the interface a file  
+    
+    def add_Item(self):
+        print("Adding a new word in the dictionnary : \n")
+        ajoute = False
+        word = input("What word do you want to add to the dictionnary ? \n")
+        word = word.lower() # word in lower case
+        
+    
+        ######################## DICTIONNARY'S CHOICE ########################
+    
+        print("In which dictionnary ? \n")
+        print("1) Organs/Synonyms dictionnary \n")
+        print("2) Properties/Values dictionnary \n")
+        print("3) Name extensions dictionnary \n")
+        
+        c = input("Your choice ? 1,2 or 3 ? \n")
+        if c == '1': 
+            file = 'organsList' # define the file we are working in
+            dico = open('organsList') # load the dictionnary
+            print("You chose Organs/Synonyms dictionnary. \n")
+        elif c == '2': 
+            file = 'valuesDico' # define the file we are working in
+            dico = open('valuesDico') # load the dictionnary
+            print("You chose Properties/Values dictionnary. \n")
+        elif c == '3': 
+            dico = open('relativeProp') # define the file we are working in
+            file = 'relativeProp' # load the dictionnary
+            print("You chose Name extensions dictionnary. \n")
+        else: # if the user enters something else
+            print("Error")
+            
+        ####################################################################
+        
+        syno = input("Is this word the synonym for another one ? y/n \n")
+        
+        if syno == 'y' or syno == 'Y': # if the word is synonym of another one
+            newsyno = input("Which one ? \n")
+            newsyno = newsyno.lower() # new synonym in lower case
+            
+            for key in dico: # look in the entire dictionnary
+                if newsyno in dico.keys(): # if newsyno is a key in the dictionnary
+                    dico[newsyno].append(word) # add word in the values of the newsyno key
+                    with open(file,'wb') as newdico: # open the file containing the dico (with 'write' argument)
+                        pickle.dump(dico,newdico) # modify the file containing the dico
+                        newdico.close() # close the file
+                    print("The word is now in the dictionnary. \n")
+                    ajoute = True
+                    break # exit the loop
+                else: # if newsyno is not a key in the dictionnary
+                    for i in dico.values(): # we look in the values of the dictionnary
+                        if newsyno in i: # if newsyno is in the values of the dictionnary
+                            i.append(word) # we add it in the list of the corresponding values
+                            with open(file,'wb') as newdico: # open the file containing the dico (with 'write' argument)
+                                pickle.dump(dico,newdico) # modify and save the file
+                                newdico.close() # close the file 
+                            print("The word is now in the dictionnary. \n")
+                            ajoute = True
+                    break # exit the loop
+            if ajoute == False: 
+                print("This word is not in the dictionnary. \n")
+        
+        elif syno == 'n' or syno == 'N': # if word is not a synonym of another word
+            dico[word] = [] # add the word as a key in the dictionnary
+            with open(file,'wb') as newdico: # open the file containing the dico (with 'write' argument)
+                pickle.dump(dico,newdico) # modify and save the file
+                newdico.close() # close the file
+                print("The word is now in the dictionnary. \n")
+                ajoute = True
+            if ajoute == False: 
+                print("This word is not in the dictionnary. \n")
+        else: # if the user enters something else
+            print("Error")
+
+      # import a file in the interface  
     def import_Fichier (self,f):  
        # on crée la liste des fichiers
         root = tk.Tk()
@@ -232,8 +305,7 @@ class Ui_MainWindow(object):
         
         self.layoutImportText3 = QtWidgets.QFormLayout()
         self.layoutImportText3.setObjectName("layoutImportText3")
-        self.labelRefNum = QtWidgets.QLabel(self.importText_page)
-        
+        self.labelRefNum = QtWidgets.QLabel(self.importText_page)       
 
         ##ref num
         self.labelRefNum.setObjectName("labelRefNum")
@@ -241,7 +313,7 @@ class Ui_MainWindow(object):
         self.lineEditRefNum = QtWidgets.QLineEdit(self.importText_page)
         self.lineEditRefNum.setObjectName("lineEditRefNum")
         self.layoutImportText3.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.lineEditRefNum)
-       
+     
         ## specie num
         self.labelSpeciesNum = QtWidgets.QLabel(self.importText_page)
         self.labelSpeciesNum.setObjectName("labelSpeciesNum")
@@ -330,24 +402,19 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(20, 5, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.layoutDescription.addItem(spacerItem1)
         
-        
         self.textEditPublishedDescription = QtWidgets.QTextEdit(self.importText_page)
         self.textEditPublishedDescription.setObjectName("textEditPublishedDescription")
         self.layoutDescription.addWidget(self.textEditPublishedDescription)
         
         ##bouton next et import file:
-        
         self.layoutImportFileAndnextButtons = QtWidgets.QHBoxLayout()
         self.layoutImportFileAndnextButtons.setObjectName("layoutImportFileAndnextButtons")
         
         #import file bouton
         self.pushButtonImportFile = QtWidgets.QPushButton(self.importText_page)
         self.pushButtonImportFile.setObjectName("pushButtonImportFile")
-        self.pushButtonImportFile.clicked.connect(self.import_Fichier)
-        
-        
+        self.pushButtonImportFile.clicked.connect(self.import_Fichier)        
         self.layoutImportFileAndnextButtons.addWidget(self.pushButtonImportFile)
-        
         
         #Next button
         self.pushButtonNext = QtWidgets.QPushButton(self.importText_page)
@@ -359,8 +426,6 @@ class Ui_MainWindow(object):
         self.labelEmptyField = QtWidgets.QLabel(self.importText_page)
         self.labelEmptyField.setObjectName("labelEmptyField")
         self.layoutImportText2.setWidget(30, QtWidgets.QFormLayout.LabelRole, self.labelEmptyField)
-
-
         self.layoutDescription.addLayout(self.layoutImportFileAndnextButtons)
         self.layoutImportText2.setLayout(2, QtWidgets.QFormLayout.SpanningRole, self.layoutDescription)
         self.layoutImportText1.addLayout(self.layoutImportText2)
@@ -416,11 +481,11 @@ class Ui_MainWindow(object):
         self.tableViewResultExecute.setFocusPolicy(QtCore.Qt.NoFocus)
         
         
-       #############################
+        #############################
         self.layoutExecute5 = QtWidgets.QHBoxLayout()
         self.layoutExecute5.setObjectName("layoutExecute5")
         
-            ################################
+        ################################
         # button delete
         ################################
         self.pushButtonDelete=QtWidgets.QPushButton(self.groupBoxExecute2)
@@ -429,10 +494,10 @@ class Ui_MainWindow(object):
         self.pushButtonDelete.setObjectName("pushButtonDelete")
         self.pushButtonDelete.clicked.connect(self.deleteTriad)
         
-#        
+        #        
         #############################
         
-               ################################
+        ################################
         # button add
         ################################
         self.pushButtonAdd=QtWidgets.QPushButton(self.groupBoxExecute2)
@@ -441,9 +506,7 @@ class Ui_MainWindow(object):
         self.pushButtonAdd.setObjectName("pushButtonAdd")
         self.pushButtonAdd.clicked.connect(self.addTriad)
         self.layoutExecute5.addWidget(self.pushButtonAdd)
-        self.layoutExecute5.addWidget(self.pushButtonDelete)
-
-#        
+        self.layoutExecute5.addWidget(self.pushButtonDelete)        
         
         ## bouton save a job
         self.pushButtonSaveAJobExecute = QtWidgets.QPushButton(self.groupBoxExecute2)
@@ -479,7 +542,6 @@ class Ui_MainWindow(object):
         self.layoutExecute4.addWidget(self.labelErrorExecute)
         
         
-        
         self.horizontalLayout_14.addLayout(self.layoutExecute4)
         self.verticalLayout_13.addWidget(self.groupBoxExecute2)
         self.layoutExecute1.addWidget(self.groupBoxExecute1)
@@ -509,6 +571,8 @@ class Ui_MainWindow(object):
         self.pushButtonAddSchema = QtWidgets.QPushButton(self.groupBoxSchema1)
         self.pushButtonAddSchema.setObjectName("pushButtonAddSchema")
         self.layoutSchema3.addWidget(self.pushButtonAddSchema)
+        self.pushButtonAddSchema.clicked.connect(self.add_Item)
+        
         
         ##bouton modify schema
         self.pushButtoModifySchema = QtWidgets.QPushButton(self.groupBoxSchema1)
@@ -557,7 +621,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        self.labelHelp.setText(_translate("MainWindow", "To use this program:\n\n- Firstly, you must either enter a text or click on the button: \"Import File\" in order to import your text.\n- Then, after clicking on the button \"Next\", you will have the possibility to validate, add or even delete the Triads\nthat you found in this text using the buttons in the execute tab. The triads will be displayed sentence by sentence.\n- Finally, you could export your result in the same tab and show them in a file that will have \"FinalResults\" as a name."
+        self.labelHelp.setText(_translate("MainWindow", "To use this program:\n\n\n\n- Firstly, you must either enter a text or click on the button: \"Import File\" in order to import your text.\n\n- Then, after clicking on the button \"Next\", you will have the possibility to validate, add or even delete the Triads\nthat you found in this text using the buttons in the execute tab. The triads will be displayed sentence by sentence.\n\n- Finally, you could export your result in the same tab and show them in a file that will have \"FinalResults\" as a name."
         ""))
         #self.labelHelp.move(0, 0)        
         self.labelHome4.setPixmap(QtGui.QPixmap(_translate("MainWindow", 'nematode.png')))
